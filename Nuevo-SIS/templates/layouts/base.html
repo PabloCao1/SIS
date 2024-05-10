@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIS
+        {% block title %}
+        {% endblock %}
+    </title>
+
+    <link rel="icon" type="image/png" href="{% static 'custom/images/favico.png' %}" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
+        integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- SweetAlert2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    {% block custom_head %}
+    {% endblock custom_head %}
+
+    <!-- dist -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{% static 'custom/css/custom.css' %}">
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-navbar-fixed
+{% if request.user.usuarios.darkmode %} dark-mode {% endif %}
+">
+    
+    {% with url_name=request.resolver_match.url_name %}
+    {% with route=request.resolver_match.route %}
+
+    <div class="wrapper">
+
+        <!-- INICIO NAVBAR----------------->
+        {% include 'layouts/navbar.html' %}
+        <!-- FIN NAVBAR-------------------->
+
+        <!-- INICIO MENU LATERAL --------->
+        {% include 'layouts/menu.html' %}
+        <!-- FIN MENU LATERAL ------------>
+
+        <!-- TITULO DE LA PAGINA -->
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h3>
+                                {% block page_title %}
+                                {% endblock page_title%}
+                            </h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                {% block breadcrumb %}
+                                {% endblock %}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- /.TITULO DE LA PAGINA-->
+
+            <!-- INICIO CONTENIDO PRINCIPAL ----------------->
+            <section class="content " id="blockcontent">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            {% block content %}
+                            {% endblock content %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- FIN CONTENIDO PRINCIPAL ----------------->
+
+        <!-- INICIO FOOTER ----------------->
+        <footer class="main-footer mt-5">
+            <div class="float-right d-none d-sm-block">
+                Version 0.1 <span id="currentYear"></span> - <strong>GOPA
+                    <script>
+                        // JavaScript para agregar el año actual
+                        document.getElementById("currentYear").textContent = new Date().getFullYear();
+                    </script>
+                </strong>
+            </div>
+            Sistema Integral de Sedes
+        </footer>
+
+        <!-- CONTROL SIDEBAR -->
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+        <!-- /.CONTROL-SIDEBAR -->
+
+    </div>
+    
+    {% endwith %}
+    {% endwith %}
+    <!-- Modal logout -->
+		<div class="modal fade" id="modal-logout">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content bg-grey-dark">
+					<div class="modal-header bg-dark">
+						<h4 class="modal-title">Cierre de sesión</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>¿Estás seguro de que deseas cerrar sesión?</p>
+					</div>
+					<div class="modal-footer justify-content-end">
+						<a class="btn btn-danger" href="{% url 'logout' %}">Cerrar sesión</a>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /modal logout -->
+
+    <!--#region **********************************   Scripts  ***********************************-->
+
+    <!-- Bootstrap 4.6 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- bs-custom-file-input -->
+    <script src="{% static 'pluggins/bs-custom-file-input/bs-custom-file-input.min.js'%}"></script>
+    <!-- dist -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+
+
+    <!--#endregion **********************************   Scripts  ***********************************-->
+
+    <!-- SWEETALERT2-->
+    <script language="JavaScript" type="text/javascript">
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            onOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        //control color logout icon
+			$("#logout_icon").hover(function () {
+				$(this).addClass("text-danger");
+				$(this).removeClass("text-lime");
+			}, function () {
+				$(this).addClass("text-lime");
+				$(this).removeClass("text-danger");
+			});
+        
+        //control Darkmode como opcion de usuario
+			$("#darkmode").on('click', function () {
+				var checked = $('body').hasClass('dark-mode');
+
+				if (checked) {
+					$('body').removeClass('dark-mode')
+					$("#darkmode_icon").removeClass("fas").addClass("far").attr("title", "Cambiar a modo oscuro");
+				} else {
+					$('body').addClass('dark-mode')
+					$("#darkmode_icon").removeClass("far").addClass("fas").attr("title", "Cambiar a modo claro");
+				}
+				$.ajaxSetup({
+					beforeSend: function (xhr, settings) {
+						xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+					}
+				});
+
+				$.ajax({
+					url: '/set_dark_mode/',
+					type: 'POST',
+					data: { 'dark_mode': checked },
+					success: function (data) {
+						console.log(data);
+					}
+				});
+			});
+    </script>
+    <script>
+        $(function () {
+          bsCustomFileInput.init();
+        });
+        </script>
+
+    {% if messages %} {% for m in messages %}
+    <script language="JavaScript" type="text/javascript">
+        Toast.fire({
+            icon: "{{ m.tags }}",
+            title: "{{ m }}",
+        });
+    </script>
+    {% endfor %} {% endif %}
+
+    <script>
+  $(document).ready(function() {
+    // Función para manejar el evento clic del botón volver
+    $(".btn-volver").on("click", function() {
+      // Redireccionar al usuario a la página anterior
+      window.history.back();
+    });
+  });
+</script>
+
+
+    {% block customJS %}
+    {% endblock customJS %}
+
+</body>
+
+</html>

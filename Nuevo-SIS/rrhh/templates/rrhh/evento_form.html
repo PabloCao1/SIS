@@ -1,0 +1,146 @@
+{% extends "layouts/base.html" %} 
+{% load static %} 
+{% load crispy_forms_tags %}
+{% block title %} - {% if url_name == 'evento_create'%} Agregar {% else %}
+Modificar {% endif %} evento 
+{% endblock %}
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+<link
+  href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.css"
+  rel="stylesheet"
+/>
+
+{% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+<!-- BLOQUE TITULO-->
+{% block page_title %} {% if url_name == 'evento_create'%} Agregar {% else %}
+Modificar {% endif %} evento {%endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+<div class="container">
+  <form
+    action=""
+    method="POST"
+    enctype="multipart/form-data"
+    class="needs-validation"
+    novalidate
+  >
+    {% csrf_token %}
+    <div class="row justify-content-center">
+      <!-- COLUMNA FOTO PERFIL-->
+      <div class="col-sm-7">
+        <div class="card card-secondary card-outline">
+          <div class="card-header">
+            <h5 class="card-title">
+              <i class="fas fa-chalkboard-teacher"></i>&nbsp; Datos del evento
+            </h5>
+            <div class="card-tools">
+              <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                <li>
+                  <button
+                    type="button"
+                    class="btn btn-tool"
+                    data-card-widget="collapse"
+                  >
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-body">{{ form | crispy}}</div>
+        </div>
+      </div>
+      <!-- COLUMNA DERECHA-->
+      <div class="col-sm-5">
+        <div class="card card-secondary card-outline">
+          <div class="card-header">
+            <h5 class="card-title"><i class="fas fa-image"></i>&nbsp; Flyer</h5>
+
+            <div class="card-tools">
+              <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                <li>
+                  <button
+                    type="button"
+                    class="btn btn-tool"
+                    data-card-widget="collapse"
+                  >
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            {% if object.flyer %}
+            <img
+              src="{{object.flyer.url}}"
+              data-holder-rendered="true"
+              alt="avatar"
+              class="avatar p-1"
+              height="250"
+              id="blah"
+            />
+            {% else %}
+            <img
+              src="{% static 'custom/images/default-evento.png' %}"
+              data-holder-rendered="true"
+              alt="avatar"
+              class="avatar p-1"
+              height="250"
+              id="blah"
+            />
+            {% endif %} {% if form.flyer.errors %}
+            <div class="error-message">
+              {% for error in form.flyer.errors %}
+              <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="mb-3 text-center">
+            <label for="id_flyer" class="btn btn-secondary font-weight-normal">
+              <span>
+                {% if url_name == 'evento_create'%} Agregar {% else %} Cambiar 
+                {%endif %} imagen
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="col-12 mb-5 mt-3 text-center">
+        <button type="submit" class="btn btn-primary mr-1">Confirmar</button>
+        {% if url_name == 'evento_create'%}
+        <button type="reset" class="btn btn-secondary">Borrar</button>
+        {% else %}
+        <a href="{% url 'evento_detail' object.id %}" class="btn btn-secondary"
+          >Cancelar</a
+        >
+        {% endif %}
+      </div>
+      <!-- FIN Botones --------->
+    </div>
+  </form>
+</div>
+
+{% endblock content%} {% block customJS %}
+<script>
+  $(document).ready(function () {
+    $("#div_id_flyer").addClass("d-none");
+
+    id_flyer.onchange = (evt) => {
+      const [file] = id_flyer.files;
+      if (file) {
+        blah.src = URL.createObjectURL(file);
+      }
+    };
+  });
+</script>
+{% endblock customJS %}

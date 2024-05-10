@@ -1,0 +1,369 @@
+{% extends "layouts/base.html" %}
+ {% load static %} 
+ {% block title %}Agregar sede{% endblock %} 
+ {% block custom_head %} 
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'pluggins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  {% endblock custom_head %} 
+ {% block page_title %} Agregar sede {% endblock %} 
+
+ {% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'listar_sede' %}">Sedes</a></li>
+<li class="breadcrumb-item active">
+  {%if request.resolver_match.url_name == "editar_sede" %} Editar {% else %}
+  Agregar {% endif %}
+</li>
+{% endblock %}; {% load crispy_forms_tags %} {% block content %}
+
+<div class="row">
+  <div class="col">
+    <form
+      class="needs-validation"
+      novalidate
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <!-- Security token -->
+      {% csrf_token %}
+      <div class="card card-primary">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">{{form.nombre| as_crispy_field}}</div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">{{form.presidente| as_crispy_field}}</div>
+            </div>
+
+            <div class="col-4">
+              <div class="form-group">{{form.calle| as_crispy_field}}</div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">{{form.altura| as_crispy_field}}</div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">{{form.piso| as_crispy_field}}</div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">{{form.telefono| as_crispy_field}}</div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">{{form.barrios| as_crispy_field}}</div>
+            </div>
+
+            <div class="col-12">
+              <hr />
+              <div class="form-group">{{form.tramites| as_crispy_field}}</div>
+            </div>
+
+            <div class="col-12">
+              <hr />
+              <div class="form-group">{{form.mapa| as_crispy_field}}</div>
+            </div>
+
+            <div class="col-12">
+              <hr />
+              <div class="form-group">{{form.portada| as_crispy_field}}</div>
+            </div>
+
+            <div class="col-12">
+              <hr />
+              <div class="form-group">
+                <label for="id_archivos" class=""> Imagenes de la sede </label>
+                <p class="pb-0 mb-0"></p>
+                <input type="file" name="archivos" id="archivos" multiple />
+              </div>
+              <div class="form-group">
+                {% if imagenes %}
+                <div class="gallery">
+                  <div class="row">
+                    {% for imagen in imagenes %}
+                    <div class="col-sm-auto">
+                      <div class="card h-100">
+                        <img
+                          class="thumbnail h-100"
+                          src="{{ imagen.archivo.url }}"
+                          alt="Imagen"
+                          style="width: 100px; height: auto"
+                        />
+                        <button
+                          type="button"
+                          class="delete-image-btn btn btn-danger btn-xs"
+                          data-image-id="{{ imagen.id }}"
+                        >
+                          Borrar
+                        </button>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% else %}
+                <p>No hay imágenes para mostrar.</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <hr />
+              <div class="form-group">
+                <label for="id_planos" class=""> Planos de la sede </label>
+                <p class="pb-0 mb-0"></p>
+                <input type="file" name="planos" id="planos" multiple />
+              </div>
+              <div class="form-group">
+                {% if planos %}
+                <div class="gallery">
+                  <div class="row">
+                    {% for plano in planos %}
+                    <div class="col-sm-auto">
+                      <div class="card h-100">
+                        <img
+                          class="thumbnail h-100"
+                          src="{{ plano.planos.url }}"
+                          alt="Plano"
+                          style="width: 100px; height: auto"
+                        />
+                        <button
+                          type="button"
+                          class="delete-plano-btn btn btn-danger btn-xs"
+                          data-plano-id="{{ plano.id }}"
+                        >
+                          Borrar
+                        </button>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% else %}
+                <p>No hay planos para mostrar.</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <hr />
+              <div class="form-group">
+                {{form.observaciones| as_crispy_field}}
+              </div>
+            </div>
+
+            <input
+              type="hidden"
+              name="images_to_delete"
+              id="images_to_delete"
+              value=""
+            />
+            <input
+              type="hidden"
+              name="planos_to_delete"
+              id="planos_to_delete"
+              value=""
+            />
+            <div
+              class="col-12 {%if request.resolver_match.url_name != 'editar_sede' %} d-none {%endif%}"
+            >
+              <div class="form-group">{{form.estado| as_crispy_field}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 mx-2">
+        <button type="submit" class="btn btn-primary mr-1">Confirmar</button>
+        {%if request.resolver_match.url_name == "editar_sede" %}
+        <a href="{% url 'ver_sede' object.id %}" class="btn btn-secondary"
+          >Cancelar</a
+        >
+        {% else %}
+        <a href="{% url 'listar_sede' %}" class="btn btn-secondary">Cancelar</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="confirmDeleteModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmar borrado</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body w-100">
+        ¿Estás seguro que deseas borrar esta imagen?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          data-dismiss="modal"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger btn-sm"
+          id="confirmDeleteButton"
+        >
+          Borrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="confirmDeletePlanoModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmar borrado</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body w-100">
+        ¿Estás seguro que deseas borrar este plano?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          data-dismiss="modal"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger btn-sm"
+          id="confirmDeletePlanoButton"
+        >
+          Borrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const deleteButtons = document.querySelectorAll(".delete-image-btn");
+
+    deleteButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const imageId = this.getAttribute("data-image-id");
+        // Abrir modal de confirmación
+        $("#confirmDeleteModal").modal("show");
+        // Establecer el ID de la imagen a borrar en el botón de confirmación dentro del modal
+        document
+          .getElementById("confirmDeleteButton")
+          .setAttribute("data-image-id", imageId);
+      });
+    });
+
+    // Listener para el botón de confirmar borrado en el modal
+    document
+      .getElementById("confirmDeleteButton")
+      .addEventListener("click", function () {
+        const imageId = this.getAttribute("data-image-id");
+        let imagesToDeleteInput = document.getElementById("images_to_delete");
+        let currentImagesToDelete = imagesToDeleteInput.value
+          ? imagesToDeleteInput.value.split(",")
+          : [];
+
+        if (!currentImagesToDelete.includes(imageId)) {
+          currentImagesToDelete.push(imageId);
+          imagesToDeleteInput.value = currentImagesToDelete.join(",");
+        }
+
+        // Cerrar el modal
+        $("#confirmDeleteModal").modal("hide");
+
+        // Opcional: Eliminar el elemento visualmente
+        document.querySelector(
+          `.delete-image-btn[data-image-id="${imageId}"]`
+        ).parentElement.parentElement.style.display = "none";
+      });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const deletePlanoButtons = document.querySelectorAll(".delete-plano-btn");
+
+    deletePlanoButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const planoId = this.getAttribute("data-plano-id");
+        // Abrir modal de confirmación
+        $("#confirmDeletePlanoModal").modal("show");
+        // Establecer el ID del plano a borrar en el botón de confirmación dentro del modal
+        document
+          .getElementById("confirmDeletePlanoButton")
+          .setAttribute("data-plano-id", planoId);
+      });
+    });
+
+    // Listener para el botón de confirmar borrado en el modal
+    document
+      .getElementById("confirmDeletePlanoButton")
+      .addEventListener("click", function () {
+        const planoId = this.getAttribute("data-plano-id");
+        let planosToDeleteInput = document.getElementById("planos_to_delete");
+        let currentPlanosToDelete = planosToDeleteInput.value
+          ? planosToDeleteInput.value.split(",")
+          : [];
+
+        if (!currentPlanosToDelete.includes(planoId)) {
+          currentPlanosToDelete.push(planoId);
+          planosToDeleteInput.value = currentPlanosToDelete.join(",");
+        }
+
+        // Cerrar el modal
+        $("#confirmDeletePlanoModal").modal("hide");
+
+        // Opcional: Eliminar el elemento visualmente
+        document.querySelector(
+          `.delete-plano-btn[data-plano-id="${planoId}"]`
+        ).parentElement.parentElement.style.display = "none";
+      });
+  });
+</script>
+{% endblock content%} 
+{% block customJS %}
+ <!-- Select2 -->
+<script src="{% static 'pluggins/select2-bootstrap4-theme/select2.full.min.js' %}"></script>
+<script>
+  $(document).ready(function () {
+    $("#id_barrios").select2({});
+    
+  });
+</script>
+{% endblock customJS%}

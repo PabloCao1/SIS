@@ -1,0 +1,46 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+<!-- BLOQUE TITLE-->
+{% block title %}
+- Tickets
+{% endblock %}
+<!-- ./BLOQUE TITLE-->
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+{% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Eliminar ticket 
+{% endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+<div class="error-page mt-5">
+  <div class="error-content ml-0">
+    <h3><i class="fas fa-exclamation-triangle text-danger"></i> Atención!</h3>
+    <p>
+      ¿Está seguro que desea eliminar de manera permanente el registro <span
+        class="font-weight-bold">{{object.ticket|upper}}</span>?
+    </p>
+    <p>Si elimina este ticket, se borrarán también de manera permanente los registros relacionados al
+      mismo dentro del sistema.</p>
+
+    <div class="text-right">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger ">Eliminar</button>
+        <a href="{% url 'tktGOPA_detail' object.id %}" class="btn btn-secondary">Cancelar</a>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content%}
+
+{% block customJS %}
+{% endblock customJS %}

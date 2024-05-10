@@ -1,0 +1,454 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} -
+{% if url_name == 'tktGOPA_add'%}
+Crear
+{% else %}
+Modificar
+{% endif %}
+ticket
+{% endblock %}
+{% block custom_head %}
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'pluggins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}" />
+<!-- Stepper -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" />
+{% endblock custom_head %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'tktGOPA_list' %}">Tickets</a></li>
+<li class="breadcrumb-item active">
+  {% if url_name == 'tktGOPA_add'%}Crear{% else %}Modificar{% endif %} ticket
+</li>
+{% endblock %}
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+{% if url_name == 'tktGOPA_add'%}
+Crear
+{% else %}
+Modificar
+{% endif %}
+ticket
+{% endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card card-default">
+      <div class="card-body p-0">
+        <div class="bs-stepper linear">
+          <div class="bs-stepper-header" role="tablist">
+            <div class="step active" data-target="#bs1">
+              <button type="button" class="step-trigger" role="tab" aria-controls="bs1" id="bs1-trigger"
+                aria-selected="true">
+                <span class="bs-stepper-circle">1</span>
+                <span class="bs-stepper-label">Paso 1</span>
+              </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#bs2">
+              <button type="button" class="step-trigger" role="tab" aria-controls="bs2" id="bs2-trigger"
+                aria-selected="false" disabled="disabled">
+                <span class="bs-stepper-circle">2</span>
+                <span class="bs-stepper-label">Paso 2</span>
+              </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#bs3">
+              <button type="button" class="step-trigger" role="tab" aria-controls="bs3" id="bs2-trigger"
+                aria-selected="false" disabled="disabled">
+                <span class="bs-stepper-circle">3</span>
+                <span class="bs-stepper-label">Paso 3</span>
+              </button>
+            </div>
+          </div>
+          <!-- INICIO STEPPER CONTENT-->
+          <div class="bs-stepper-content">
+            <form class="needs-validation" novalidate method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <!-- INICIO PAGINA 1-->
+              {% if url_name == 'tktGOPA_change'%}
+              <input type="hidden" name="ticket" id="id_ticket" value="{{object.ticket}}">
+              {% endif %}
+              <div id="bs1" class="content active dstepper-block" role="tabpanel" aria-labelledby="bs1-trigger">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row ">
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Nombre
+                            {% if form.nombre.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.nombre | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Apellido
+                            {% if form.apellido.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.apellido | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">CUIT
+                            {% if form.CUIT.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.CUIT | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Email
+                            {% if form.mail.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.mail | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Sede
+                            {% if form.fk_sede.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.fk_sede | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Subsede
+                            {% if form.subsede.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.subsede | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Area
+                            {% if form.area.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.area | as_crispy_field}}
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Organisimo
+                            {% if form.organismo.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.organismo | as_crispy_field}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col text-center">
+                    <button type="button" class="btn btn-primary next-button" id="next-button">Siguiente</button>
+                  </div>
+                </div>
+              </div>
+              <!--FIN 1-->
+              <!-- INICIO PAGINA 2-->
+              <div id="bs2" class="content" role="tabpanel" aria-labelledby="bs2-trigger">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row ">
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Nombre Agenda
+                            {% if form.nombre_agenda.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.nombre_agenda | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Fecha de Publicación
+                            {% if form.fecha_publicacion.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.fecha_publicacion | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Fecha primer turno
+                            {% if form.fecha_primer_turno.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.fecha_primer_turno | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Maxima cant. de turnos por ciudadano
+                            {% if form.max_turnos.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.max_turnos | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col text-left">
+                          <h6 class="mt-2">Dias de atención
+                            {% if form.dias_atencion.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.dias_atencion | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Banda horaria
+                            {% if form.banda_horaria.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.banda_horaria | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Duración del tramite
+                            {% if form.duracion_tramite.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.duracion_tramite | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Cantidada turnos simultaneos
+                            {% if form.cant_turnos_simultaneo.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.cant_turnos_simultaneo | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Tiempo de precancelación
+                            {% if form.tiempo_precancelacion.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.tiempo_precancelacion | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Visibilidad de agenda
+                            {% if form.visibilidad_agenda.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.visibilidad_agenda | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Cantidad de cupos de citas diarios
+                            {% if form.cupos_citas_diarios.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.cupos_citas_diarios | as_crispy_field}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col text-center">
+                    <button type="button" class="btn btn-primary previous-button" id="previous-button">Anterior</button>
+                    <button type="button" class="btn btn-primary next-button" id="next-button">Siguiente</button>
+                  </div>
+                </div>
+              </div>
+              <!-- FIN 2 -->
+              <!-- INICIO PAGINA 3-->
+              <div id="bs3" class="content" role="tabpanel" aria-labelledby="bs3-trigger">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row ">
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Texto en el mail de confirmación.
+                            {% if form.txt_mail_confirmacion.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.txt_mail_confirmacion | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Leyenda que figura antes de confirmar el turno.
+                            {% if form.popup.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.popup | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Documentación permitida.
+                            {% if form.documentos_permitidos.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.documentos_permitidos | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">URL de redireccion al finalizar el tramite.
+                            {% if form.url_tramite.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.url_tramite | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">Requiere Login con MiBA?
+                            {% if form.login_BA.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.login_BA | as_crispy_field}}
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="col-sm-auto text-left">
+                          <h6 class="mt-2">El vecino puede reagendar cita?
+                            {% if form.vecino_reagendar_cita.field.required %}
+                            <span class="text-danger font-weight-bolder">*</span>
+                            {% endif %}
+                          </h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                          {{form.vecino_reagendar_cita | as_crispy_field}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col text-center">
+                    <button type="button" class="btn btn-primary previous-button" id="previous-button">Anterior</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                  </div>
+                </div>
+              </div>
+              <!-- FIN 3 -->
+            </form>
+          </div>
+          <!-- FIN STEPPER -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block customJS %}
+<!-- Select2 -->
+<script src="{% static 'pluggins/select2-bootstrap4-theme/select2.full.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $(".select2").select2();
+
+    // Inicializar Stepper
+    var stepper = new Stepper($('.bs-stepper')[0]);
+
+    $('.next-button').on('click', function () {
+      stepper.next();
+    });
+
+    $('.previous-button').on('click', function () {
+      stepper.previous();
+    });
+  });
+</script>
+{% endblock customJS %}
