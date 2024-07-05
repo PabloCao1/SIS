@@ -1,0 +1,183 @@
+{% load static %}
+{% with pagina_actual=request.resolver_match.route %}
+
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="" class="brand-link"><img src="{% static 'custom/images/favico.png' %}" alt="AdminLTE Docs Logo Small"
+            class="brand-image-xl logo-xs" />
+        <span class="brand-text font-weight-light">TKT GOPA</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Usuario-->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                {% if request.user.usuarios.imagen %}
+                <img class="user-image img-circle elevation-1 " src="{{request.user.usuarios.imagen.url}}"
+                    alt="User Image" />
+                {% else %}
+                <img src="{% static 'custom/images/default-user.png' %}" class="img-circle elevation-1"
+                    alt="User Image">
+                {% endif %}
+
+            </div>
+            <div class="info">
+                <a href="{% url 'usuarios_ver' request.user.usuarios.id %}" class="d-block">
+                    {% if request.user.get_full_name %}
+                    {{request.user.get_full_name}}
+                    {% else %}
+                    {{request.user}}
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        <!-- Puntos de Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                {% comment %}
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link {% if url_name == 'index' %}active{% endif %}">
+                        <i class="nav-icon fas fa-chart-pie"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+                {% endcomment %}
+                {% if perms.Usuarios.view_usuarios %}
+                <li class="nav-item {% if 'administracion' in route %}menu-open {% endif %}">
+                    <a href="#" class="nav-link {% if 'administracion' in route %}active{% endif %}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>Administrador<i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                
+                        <li class="nav-item">
+                            <a href="{% url 'usuarios_listar' %}"
+                                class="nav-link {% if 'usuarios' in route or 'password' in route %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Usuarios</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'grupos_listar' %}"
+                                class="nav-link {% if 'administracion/grupos' in route %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Grupos de usuario</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% comment %}
+                {% endif %}
+                <li
+                    class="nav-item {% if url_name == 'detalle_sede' or url_name == 'agregar_sede' or url_name == 'listar_sede' or url_name == 'modificar_sede' %}menu-open{% endif %}">
+                    <a href="#"
+                        class="nav-link  {% if url_name == 'detalle_sede' or url_name == 'agregar_sede' or url_name == 'listar_sede' or url_name == 'modificar_sede' %}active{% endif %}">
+                        <i class="nav-icon fas fa-building"></i>
+                        <p>
+                            Sedes
+                            <i class="fas fa-angle-left right"></i>
+                            <!--<span class="badge badge-info right">6</span>-->
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ">
+                            <a href="{% url 'listar_sede' %}"
+                                class="nav-link {% if url_name == 'listar_sede' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon "></i>
+                                <p>Listado</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'listar_servicios' %}"
+                                class="nav-link {% if 'configuraciones/servicios' in route %}active{% endif %}">
+                                <i class="nav-icon far fa-circle nav-icon "></i>
+                                <p>Servicios</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'listar_tramites' %}"
+                                class="nav-link {% if 'configuraciones/tramites' in route %}active{% endif %}">
+                                <i class="nav-icon far fa-circle nav-icon"></i>
+                                <p>Trámites</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% if perms.rrhh.view_empleado %}
+                <li class="nav-item {% if 'rrhh/' in route %}menu-open{% endif %}">
+                    <a href="#" class="nav-link  {% if 'empleado/' in route or 'eventos/' in route %}active{% endif %}">
+                        <i class="nav-icon fas fa-user-friends"></i>
+                        <p>
+                            Recursos Humanos
+                            <i class="fas fa-angle-left right"></i>
+                            <!--<span class="badge badge-info right">6</span>-->
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview ">
+                        <li class="nav-item ">
+                            <a href="{% url 'empleado_list' %}"
+                                class="nav-link {% if 'empleado/' in route %}active{% endif %} px-3">
+                                <i class="far fa-circle nav-icon nav-icon"></i>
+                                <p>Empleados</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'evento_list' %}"
+                                class="nav-link {% if '/eventos/' in route %}active{% endif %} px-3">
+                                <i class="far fa-circle nav-icon nav-icon"></i>
+                                <p>Eventos</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+{% endcomment %}
+                <li
+                class="nav-item {% if 'tktGOPA' in pagina_actual %}menu-open{% endif %}">
+                <a href="#"
+                    class="nav-link  {% if 'tktGOPA' in pagina_actual %}active{% endif %}">
+                    <i class="nav-icon fas fa-building"></i>
+                    <p>
+                        Tickets GOPA
+                        <i class="fas fa-angle-left right"></i>
+                        <!--<span class="badge badge-info right">6</span>-->
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item ">
+                        <a href="{% url 'tktGOPA_list' %}"
+                            class="nav-link {% if url_name == 'tktGOPA_list' %}active{% endif %}">
+                            <i class="far fa-circle nav-icon "></i>
+                            <p>Listado</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+{% comment %}
+                {%endif%}
+
+                <li class="nav-item">
+                    <a href="{% url 'calendario' %}"
+                        class="nav-link {% if url_name == 'calendario' %}active{% endif %}">
+                        <i class="nav-icon far fa-calendar-alt"></i>
+                        <p>
+                            Calendario
+                            <span class="badge badge-info right"></span>
+                        </p>
+                    </a>
+                </li>
+                {% endcomment %}
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+<!-- FIN MENU COSTADO ---------------->
+{% endwith %}

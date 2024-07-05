@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKT Gopa -Login</title>
+    <link rel="icon" type="image/png" href="{% static 'custom/images/favico.png' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+
+</head>
+
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            
+            <h3 class="font-weight-light mt-0 mb-4">TKT Gopa</h3>
+        </div>
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Inicie sesión</p>
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <input type="text" class="form-control form-control-border" id="username" name="username"
+                                placeholder="Cuil" required>
+                            <input type="password" class="form-control form-control-border" id="password"
+                                name="password" placeholder="Contraseña" required>
+                        </div>
+
+                    </div>
+                    <div class="row justify-content-end">
+                        <button type="submit" class="btn btn-primary">Ingresar</button>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="mt-5 text-center">
+            {% if messages %}
+            <div class="">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show " role="alert">
+                    {{ message }}
+                    
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if form.errors %}
+            <div class="row mt-5 justify-content-center">
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <strong>Error en usuario o contraseña Inténtelo nuevamente.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if next %}
+            <div class="row mt-5 justify-content-center">
+                {% if user.is_authenticated %}
+                <div class="alert alert-warning alert-dismissible fade show">
+                    <strong>Su cuenta no tiene acceso a esta página.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                </div>
+                {% else %}
+                <div class="alert alert-info alert-dismissible fade show">
+                    <strong>Inicie sesión para ver la página solicitada.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+<!-- BLOQUE TITLE-->
+{% block title %}
+- Calendario
+{% endblock %}
+<!-- ./BLOQUE TITLE-->
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css' rel='stylesheet' />
+{% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Calendario
+{%endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card card-primary">
+                <div class="card-body p-0">
+                    <div id="calendario">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sticky-top mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-check-circle"></i>&nbsp;Calendarios Visibles
+                        </h5>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action bg-gradient-cyan"><i
+                                class="fas fa-birthday-cake"></i> Cumpleaños<input class="cs mx-3" value="1"
+                                type="checkbox" checked></a>
+                        <a href="#" class="list-group-item list-group-item-action bg-gradient-purple"><i
+                                class="fas fa-smile"></i> Otro<input class="cs mx-3" value="2" type="checkbox"
+                                checked></a>
+                        <a href="#" class="list-group-item list-group-item-action bg-gradient-pink"><i
+                                class="fas fa-sticky-note"></i> Otro <input class="cs mx-3" value="3" type="checkbox"
+                                checked></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cumpleaños -->
+<div class="modal fade" id="modalCumpleanios" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-cyan">
+                <h4 class="modal-title modal-dialog-centered"><i class="fas fa-birthday-cake"></i>&nbsp;&nbsp;
+                    Cumpleaños</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-auto">
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <h6 class="mt-2 text-left">Nombre</h6>
+                        </div>
+                        <div class="col text-secondary text-left">
+                            <h4 class="mt-2" id="cu_titulo"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <h6 class="mt-2 text-left"> Fecha nacimiento</h6>
+                        </div>
+                        <div class="col-sm-auto text-secondary text-left">
+                            <h4 class="mt-2" id="cu_fecha"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <h6 class="mt-2 text-left"> Edad</h6>
+                        </div>
+                        <div class="col-sm-auto text-secondary text-left">
+                            <h4 class="mt-2" id="cu_edad"></h4>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <h6 class="mt-2 text-left"> GO/Equipo</h6>
+                        </div>
+                        <div class="col-sm-auto text-secondary text-left">
+                            <h4 class="mt-2" id="cu_equipo"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <h6 class="mt-2 text-left">Sede</h6>
+                        </div>
+                        <div class="col-sm-auto text-secondary text-left">
+                            <h4 class="mt-2" id="cu_sede"></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <!-- Botones -->
+                <div class="row">
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="#" class="btn btn-primary" role="button" aria-pressed="true" id="cu_url">Ver
+                            empleado</a>
+                    </div>
+                </div>
+                <!-- FIN Botones --------->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content%}
+
+{% block customJS %}
+
+<!-- fullCalendar-->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js'></script>
+<script src="{% static '/pluggins/fullcalendar/locales-all.min.js' %}"></script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var datosJson = JSON.parse('{{ cumpleanos_json|escapejs }}');
+
+        var calendarEl = document.getElementById('calendario');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            timeZone: 'UTC',
+            dayMaxEvents: true, // allow "more" link when too many events
+            locale: 'es',
+            themeSystem: 'Flatly',
+            events: datosJson,
+            eventClick: function (info) {
+
+                info.jsEvent.preventDefault();
+                if (info.event.extendedProps.tipo == 'cumpleanos') {
+                    $('#cu_titulo').html(info.event.title);
+                    $('#cu_fecha').html(info.event.extendedProps.fechaNacimiento);
+                    $('#cu_edad').html(info.event.extendedProps.edad + ' años');
+                    $('#cu_equipo').html(info.event.extendedProps.GO_equipo);
+                    $('#cu_sede').html(info.event.extendedProps.sede);
+                    $('#cu_url').attr('href', info.event.url);
+                    $('#modalCumpleanios').modal();
+                }
+            },
+
+            eventDidMount: function (arg) {
+                var cs = document.querySelectorAll(".cs");
+                cs.forEach(function (v) {
+                    if (v.checked) {
+                        if (arg.event.extendedProps.cid === v.value) {
+                            arg.el.style.display = "auto";
+                        }
+                    } else {
+                        if (arg.event.extendedProps.cid === v.value) {
+                            arg.el.style.display = "none";
+                        }
+                    }
+                });
+                if (arg.event.extendedProps.background) {
+                    arg.el.style.background = arg.event.extendedProps.background;
+                }
+
+
+            },
+        });
+
+        calendar.render();
+        var csx = document.querySelectorAll(".cs")
+        csx.forEach(function (el) {
+            el.addEventListener('change', function () {
+                calendar.refetchEvents();
+                console.log(el);
+            })
+        });
+    });
+
+</script>
+{% endblock customJS %}

@@ -1,0 +1,275 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+{% block title %}
+- Eventos del empleado
+{% endblock %}
+{% load crispy_forms_tags %}
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+<link
+  href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.css"
+  rel="stylesheet">
+
+{% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item"><a href="{% url 'empleado_detail' empleado.id %}">{{empleado.CUIT}}</a></li>
+<li class="breadcrumb-item active">Eventos</li>
+{% endblock %}
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Listado de eventos del empleado
+{%endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+
+<div class="row d-flex justify-content-between my-3 mx-sm-2">
+  <div class="col-12 col-sm-3">
+    <a class="btn btn-primary mb-2 mb-sm-0 d-block d-sm-inline" data-toggle="modal" data-empleado="{{empleado.id}}"
+      data-target="#modalAgregarEvento">Agregar</a>
+  </div>
+  <div class="col-12 col-sm-3">
+    <form action="" method="GET">
+      <div class="input-group">
+        <input type="search" class="form-control form-control-md" placeholder="Nombre, tipo o modalidad"
+          value="{{ request.GET.busqueda }}" name="busqueda" />
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-md btn-default">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card ">
+      <div class="card-header btn" data-card-widget="collapse">
+        <h5 class="card-title">
+          <i class="fas fa-user"></i>&nbsp; Empleado
+        </h5>
+        <div class="card-tools">
+          <ul class="list-unstyled mb-0 d-flex justify-content-center">
+            <li>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-2">Apellidos y Nombres </dt>
+          <dd class="col-sm-10">{{ empleado.apellidos}} {{ empleado.nombres}}</dd>
+          <dt class="col-sm-2">CUIT</dt>
+          <dd class="col-sm-10">{{ empleado.CUIT}}</dd>
+          <dt class="col-sm-2">Sede</dt>
+          <dd class="col-sm-10">{{ empleado.sede}}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card ">
+      <div class="card-header">
+        <h5 class="card-title">
+          <i class="fas fa-chalkboard-teacher"></i>&nbsp; Eventos del empleado
+        </h5>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="maximize" title="expandir">
+            <i class="fas fa-expand"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <table id="DataTableJS" class="table compact hover order-column row-border my-3" style="width: 100%">
+          <thead class="thead-dark">
+            <tr>
+              <th class="font-weight-bold h6 ">Evento</th>
+              <th class="font-weight-bold h6 ">Inscripto</th>
+              <th class="font-weight-bold h6">Tipo</th>
+              <th class="font-weight-bold h6">Evento</th>
+              <th class="font-weight-bold h6">Modalidad</th>
+              <th class="font-weight-bold h6 ">Asistió</th>
+              <!-- <th class="font-weight-bold h6 ">Aprobado</th> -->
+              <th style="width: 5%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in object_list %}
+            <tr class="mt-2">
+              <td class="h6 "> {{ c.evento.fecha| date:'d/m/Y' }} </td>
+              <td class="h6 "> {{ c.inscripto| date:'d/m/Y' }} </td>
+              <td class="h6"> {{ c.evento.fk_tipo }} </td>
+              <th scope="row" class="h6"> {{c.evento.nombre}} </th>
+              <th scope="row" class="h6"> {{c.evento.modalidad}} </th>
+              <td class="h6 ">
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input switch-asistio" type="checkbox" id="customCheckbox-{{c.id}}" data-id="{{ c.id }}" value="" 
+                  {% if c.asistio %}checked{% endif %}>
+                  <label for="customCheckbox-{{c.id}}" class="custom-control-label"></label>
+                  </div>
+                </td>
+              
+              <td class="p-0 m-0 mt-1 pr-1 text-right">
+                <a href="{% url 'evento_detail' c.evento.id %}"><i class="fas fa-info-circle text-secondary mr-2"
+                    title="Ver evento"></i></a>
+                <a href="{% url 'empleado-borrar-evento' c.id %}"><i class="fas fa-trash-alt text-secondary mr-2"
+                    title="Borrar evento"></i></a>
+
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+</div>
+
+<!----- MODAL AGREGAR EVENTO ------------->
+<div class="modal fade" id="modalAgregarEvento" tabindex="-1" aria-labelledby="modalagregareventolabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Evento</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="#" method="POST" id="form-agregar-evento">
+        <div class="modal-body">
+          {% csrf_token %}
+          {{ form_agregar_evento |crispy}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary boton-agregar-evento mr-1">Confirmar</button>
+          <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content%}
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script
+  src="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.js"></script>
+  <script src="{% static 'custom/js/dataTable.js' %}"></script>
+<script>
+
+  $(document).ready(function () {
+
+    let dataTable = initDataTable('#DataTableJS');
+
+    $('.boton-agregar-evento').click(function () {
+      let form = $('#form-agregar-evento')[0];
+      if (form.checkValidity()) {
+        let datos = $('#form-agregar-evento').serialize();
+        let url = '{% url "empleado-agregar-evento" %}'; // URL base sin la pk
+        let empleadoId = $('#id_empleado').val(); // Obtener el id del empleado
+        if (empleadoId) {
+          url += '?pk=' + empleadoId; // Agregar la pk como parámetro
+        }
+        $.ajax({
+          url: url, // Usar la URL con la pk si está disponible
+          type: 'POST',
+          data: datos,
+          success: function (response) {
+            if (response.success) {
+              Toast.fire({
+                icon: 'success',
+                title: 'Evento agregado exitosamente'
+              });
+              setTimeout(function () {
+                location.reload();
+              }, 1000); // milisegundos
+            } else {
+              Toast.fire({
+                icon: 'error',
+                title: 'Error al agregar evento: ' + response.errors
+              });
+            }
+          },
+          error: function (xhr, status, error) {
+            var errorMessage = "Error al agregar evento: ";
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+              var errors = xhr.responseJSON.errors;
+              for (var key in errors) {
+                errorMessage += key + ": " + errors[key].join(", ") + "; ";
+              }
+            } else {
+              errorMessage += error;
+            }
+            Toast.fire({
+              icon: 'error',
+              title: errorMessage
+            });
+          }
+        });
+      } else {
+        // Si el formulario no es válido, mostramos un mensaje de error o hacemos otra acción
+        Toast.fire({
+          icon: 'error',
+          title: 'Por favor, complete todos los campos obligatorios.'
+        });
+      }
+    });
+    
+    $('.switch-asistio').change(function () {
+    var switchElement = $(this);
+    var id = switchElement.data('id');
+    var isChecked = switchElement.is(':checked') ? 1 : 0;
+    var csrftoken = $('[name=csrfmiddlewaretoken]').val(); // Obtener el token CSRF
+
+    $.ajax({
+        url: '{% url "actualizar_asistio" %}',
+        type: 'POST',
+        data: {
+            'id': id,
+            'asistio': isChecked
+        },
+        headers: { 'X-CSRFToken': csrftoken }, // Incluir el token CSRF en los encabezados
+        success: function (response) {
+            if (isChecked) {
+                switchElement.removeAttr('checked');
+            } else {
+                switchElement.attr('checked');
+            }
+            Toast.fire({
+                icon: 'success',
+                title: 'Asistencia cambiada exitosamente'
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+            Toast.fire({
+                icon: 'error',
+                title: error
+            });
+        }
+    });
+});
+
+  });
+</script>
+
+{% endblock customJS %}

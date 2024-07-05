@@ -1,0 +1,608 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+-
+{% if url_name == 'empleado_add'%}
+Agregar
+{% else %}
+Modificar
+{% endif %}
+empleado
+
+{% endblock %}
+
+{% block custom_head %}
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'pluggins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+{% endblock custom_head %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item active">Agregar empleado</li>
+{% endblock %}
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+{% if url_name == 'empleado_add'%}
+Agregar
+{% else %}
+Modificar
+{% endif %}
+
+perfil de empleado
+{%endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+<form action="" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+  <div class="row justify-content-center">
+
+    <div class="col-lg-5">
+      {% csrf_token %}
+      <!-- COLUMNA FOTO PERFIL-->
+      <div class="card card-secondary card-outline">
+        <div class="card-header">
+          <div class="card-body text-center">
+            {% if object.foto %}
+            <img src="{{object.foto.url}}" data-holder-rendered="true" alt="avatar" class="avatar p-1" height="150"
+              id="blah" />
+            {% else %}
+            <img src="{% static 'custom/images/default-user.png' %}" data-holder-rendered="true" alt="avatar"
+              class="avatar p-1" height="150" id="blah" />
+            {% endif %} {% if form.foto.errors %}
+            <div class="error-message">
+              {% for error in form.foto.errors %}
+              <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="mb-3 text-center">
+            <label for="id_foto" class="btn btn-secondary font-weight-normal">
+              <span>
+                {% if url_name == 'empleado_add'%} Agregar {% else %} Cambiar
+                {%endif %} imagen
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <!-- campo estado ACTIVO/DESACTIVADO oculto (se modifica por ajaxcall en la detailView) -->
+          <span hidden>{{ form.activo }}</span>
+          <span hidden>{{ form.foto }}</span>
+          <div class="row ">
+            <div class="col-sm-6">
+              <div class="col-sm-auto text-left">
+                <h6 class="mt-2">Nombres
+                  <span class="text-danger font-weight-bolder">*</span>
+                </h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{form.nombres | as_crispy_field}}
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="col-sm-auto text-left">
+                <h6 class="mt-2">Apellidos                  
+                  <span class="text-danger font-weight-bolder">*</span>
+                </h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{form.apellidos | as_crispy_field}}
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="col-sm-auto text-left">
+                <h6 class="mt-2">CUIT                  
+                  <span class="text-danger font-weight-bolder">*</span>
+                </h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{form.CUIT | as_crispy_field}}
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="col-sm-auto text-left">
+                <h6 class="mt-2">Sede
+                  <span class="text-danger font-weight-bolder">*</span>
+                </h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{form.sede | as_crispy_field}}
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Área</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.area | as_crispy_field}}
+              </div>
+            </div>
+          
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Organismo</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.organismo | as_crispy_field}}
+              </div>
+            </div>
+          
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Nro. Expediente</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.nro_expediente | as_crispy_field}}
+              </div>
+            </div>
+          
+           
+          
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">SECACGC</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.SECACGC | as_crispy_field}}
+              </div>
+            </div>
+          
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">GO/Equipo</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.GO_equipo | as_crispy_field}}
+              </div>
+            </div>
+          
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Delegación</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.delegacion | as_crispy_field}}
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Email oficial</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.mail_oficial | as_crispy_field}}
+              </div>
+            </div>
+          
+            <div class="col-sm-6">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Teléfono</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.telefono | as_crispy_field}}
+              </div>
+            </div>
+          
+            <div class="col-12">
+              <div class="col-sm-auto">
+                <h6 class="mt-2 text-left">Función</h6>
+              </div>
+              <div class="col text-secondary text-left">
+                {{ form.funcion | as_crispy_field}}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <h6 class="mt-2 text-left">Tareas</h6>
+            </div>
+            <div class="col text-secondary text-left w-100">
+              {{ form.m2m_tareas | as_crispy_field}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN COLUMNA PERFIL -->
+
+    <div class="col-lg-7">
+
+      <!-- Tarjeta Personal -->
+      <div class="row">
+        <div class="col">
+          <div class="card card-secondary card-outline">
+            <div class="card-header btn" data-card-widget="collapse">
+              <h5 class="card-title">
+                <i class="fas fa-user"></i>&nbsp; Datos Personales
+              </h5>
+              <div class="card-tools">
+                <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                  <li>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Fecha Nacimiento</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.fecha_nacimiento | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">DNI</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.DNI | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Sexo</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.sexo | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Discapacidad</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.discapacidad | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Estado Civil</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.estado_civil | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Hijos</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.hijos | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">En edad escolar?</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.hijos_escolar | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Con discapacidad?</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.hijos_discapacidad | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row ">
+                <div class="col-12">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2 text-left">Dirección</h6>
+                  </div>
+                </div>
+                <div class="col-12 text-secondary text-left">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      {{ form.calle | as_crispy_field}}
+                    </div>
+                    <div class="col-sm-2 text-left">
+                      {{ form.altura | as_crispy_field}}
+                    </div>
+                    <div class="col-sm-2 text-left">
+                      {{ form.piso | as_crispy_field}}
+                    </div>
+                    <div class="col-sm-2 text-left">
+                      {{ form.departamento | as_crispy_field}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-5">
+                      {{ form.ciudad | as_crispy_field}}
+                    </div>
+                    <div class="col-sm-3">
+                      {{ form.CP | as_crispy_field}}
+                    </div>
+                    <div class="col-sm-4">
+                      {{ form.provincia | as_crispy_field}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Comuna</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.comuna | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Email particular</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{ form.mail_particular | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FIN Tarjeta Personal --------->
+
+      <!-- Tarjeta Laborales -->
+      <div class="row">
+        <div class="col">
+          <div class="card collapsed-card card-secondary card-outline">
+            <div class="card-header btn" data-card-widget="collapse">
+              <h5 class="card-title">
+                <i class="fas fa-id-card-alt"></i>&nbsp; Datos Laborales
+              </h5>
+
+              <div class="card-tools">
+                <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                  <li>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Tipo de Contratación</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.tipo_contratacion | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Año Ingreso</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.anio_ingreso | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+
+                <div class="col-sm-3">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">En comisión</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.en_comision | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Remoto?</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.remoto | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Gremio</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.gremio | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Cap. Polivalente</h6>
+                  </div>
+                  <div class="col-sm-auto text-secondary text-left">
+                    {{form.capacitacion_polivalente | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Unidad Organizativa</h6>
+                  </div>
+                  <div class="col-sm-auto text-secondary text-left">
+                    {{form.unidad_organizativa | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Val. Nomina 2021</h6>
+                  </div>
+                  <div class="col-sm-auto text-secondary text-left">
+                    {{form.val_nomina_2021 | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">ID de Puesto</h6>
+                  </div>
+                  <div class="col-sm-auto text-secondary text-left">
+                    {{form.id_puesto | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Vacaciones Disponibles</h6>
+                  </div>
+                  <div class="col-sm-auto text-secondary text-left">
+                    {{form.vacaciones_anuales| as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Últ. Eval. Desempeño</h6>
+                  </div>
+                  <div class="col-sm-auto text-secondary text-left">
+                    {{form.ult_eval_desemp | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row px-1">
+                <div class="col-12 text-left">
+                  <h6 class="mt-2">Observaciones</h6>
+                </div>
+                <div class="col-12 text-secondary text-left">
+                  {{form.observaciones | as_crispy_field}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FIN Tarjeta Laborales --------->
+
+      <!-- Tarjeta Profesionales -->
+      <div class="row">
+        <div class="col">
+          <div class="card collapsed-card card-secondary card-outline">
+            <div class="card-header btn" data-card-widget="collapse">
+              <h5 class="card-title">
+                <i class="fas fa-user-graduate"></i>&nbsp; Datos Profesionales
+              </h5>
+              <div class="card-tools">
+                <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                  <li>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Máximo nivel educativo</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.niv_educativo | as_crispy_field}}
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Año de graduación</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.anio_ingreso | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Profesión / Oficio</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.profesion_oficio | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Establecimiento</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.establecimiento | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="col-sm-auto text-left">
+                    <h6 class="mt-2">Título</h6>
+                  </div>
+                  <div class="col text-secondary text-left">
+                    {{form.titulo | as_crispy_field}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="col-lg-12">
+      <!-- Botones -->
+      <div class="mt-3 mb-5 text-center">
+        <button type="submit" class="btn btn-primary mr-1">Confirmar</button>
+        {% if url_name == 'empleado_add'%}
+        <button type="reset" class="btn btn-secondary">Borrar</button>
+        {% else %}
+        <a href="{% url 'empleado_detail' object.id %}" class="btn btn-secondary">Cancelar</a>
+        {% endif %}
+      </div>
+      <!-- FIN Botones --------->
+    </div>
+
+  </div>
+</form>
+{% endblock content %}
+
+{% block customJS %}
+<!-- Select2 -->
+<script src="{% static 'pluggins/select2-bootstrap4-theme/select2.full.min.js' %}"></script>
+
+<script>
+
+  $(document).ready(function () {
+
+    $('.select2').select2();
+
+    id_foto.onchange = (evt) => {
+      const [file] = id_foto.files;
+      if (file) {
+        blah.src = URL.createObjectURL(file);
+      }
+    };
+
+  });
+</script>
+{% endblock customJS %}

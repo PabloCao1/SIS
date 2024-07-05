@@ -1,0 +1,382 @@
+{% extends "layouts/base.html" %};
+{% load static %}
+{% block title %}{{ object.nombre }}{% endblock %}
+
+{% block custom_head %}
+    <!--Chart.js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock custom_head %}
+
+{% block page_title %}{{ object.nombre }}{% endblock %};
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'listar_sede' %}">Sedes</a></li>
+<li class="breadcrumb-item active">{{ object.nombre }}</a></li>
+{% endblock %};
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row d-flex justify-content-between my-3 mx-sm-2">
+  <div class="col-12">
+    <a class="btn btn-primary mb-2 mb-sm-0 d-block d-sm-inline" href="{% url 'editar_sede' object.id %}">Editar</a>
+    <a class="btn btn-danger mb-2 mb-sm-0 d-block d-sm-inline" href="{% url 'eliminar_sede' object.id %}">Borrar</a>
+  </div>
+</div>
+<div class="row d-flex  justify-content-center">
+  <!-- COLUMNA IZQUIERDA-->
+  <div class="col-sm-4">
+    <div class="card card-widget widget-user">
+      {% if object.portada %}
+      <div class="widget-user-header text-white"
+        style="background: url('{{ object.portada.url }}') center center; background-size: cover;"></div>
+      {% else %}
+      <div class="widget-user-header text-white"
+        style="background: url('{% static 'custom/images/portada.png' %}') center center; background-size: cover; width: 100%;">
+      </div>
+      {% endif %}
+      <div class="card-body">
+        <h4>{{object.nombre}}</h4>
+        <hr>
+        <dl>
+          <dt>Presidente</dt>
+          <dd>{{object.presidente|default_if_none:"-"}}</dd>
+          <dt>Dirección</dt>
+          <dd>{{object.calle|default_if_none:""}} {{object.altura|default_if_none:"-"}}
+            {{object.piso|default_if_none:""}}</dd>
+          <dt>Telefono</dt>
+          <dd>{{object.telefono|default_if_none:"-"}}</dd>
+          <dt>Barrios que la componen</dt>
+          <dd>
+            <ul>
+              {% for barrio in object.barrios.all %}
+              <li>{{ barrio.nombre }}</li>
+              {% empty %}
+              <li>No hay barrios asociados.</li>
+              {% endfor %}
+            </ul>
+          </dd>
+          <dt>Observaciones</dt>
+          <dd>{{object.observaciones|default_if_none:"-"}}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <!-- FIN COLUMNA ACCIONES -->
+  <!-- COLUMNA PRINCIPAL-->
+  <div class="col-sm-8">
+
+    <!-- ALERTA INACTIVO-->
+    {% if not object.estado %}
+    <div class="alert alert-danger">
+      <h5><i class="icon fas fa-ban"></i> Atención!</h5>
+      La siguiente Sede se encuentra en estado INACTIVO
+      </div>
+    {% endif %}
+    <!-- FIN ALERTA INACTIVO-->
+
+        <!-- INICIO DATOS SEDE-->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">
+              <i class="fas fa-file-alt"></i>&nbsp; Dashboard Isla Digitales (Top 10 Tramites 2024)
+            </h5>
+          </div>
+          <div class="card-body">
+            <div style="height: 300px;">
+              <canvas id="miGrafico"></canvas>
+          </div>
+          </div>
+        </div>
+
+       <!--INICIO SERVICIOS-->
+    <div class="card collapsed-card">
+      <div class="card-header btn" data-card-widget="collapse">
+        <h5 class="card-title">
+          <i class="fas fa-file-alt"></i>&nbsp; Servicios
+        </h5>
+
+        <div class="card-tools">
+          <ul class="list-unstyled mb-0 d-flex justify-content-center">
+            <li>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-12 col-sm-4">
+            <div class="info-box bg-light">
+              <div class="info-box-content">
+                <span class="info-box-text text-center text-muted">Tramites</span>
+                <span class="info-box-number text-center text-muted mb-0">{{count_tramites|default_if_none:"-"}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-4">
+            <div class="info-box bg-light">
+              <div class="info-box-content">
+                <span class="info-box-text text-center text-muted">Turnos</span>
+                <span class="info-box-number text-center text-muted mb-0">{{count_turno|default_if_none:"-"}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-4">
+            <div class="info-box bg-light">
+              <div class="info-box-content">
+                <span class="info-box-text text-center text-muted">Espontaneos</span>
+                <span
+                  class="info-box-number text-center text-muted mb-0">{{count_espontaneo|default_if_none:"-"}}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mx-5">
+          <dl class="row">
+            {% for servicio, lista_tramites in tramites_por_servicio.items %}
+            <dt class="col-3 text-right">{{ servicio }}</dt>
+            <dd class="col-9">
+              <ul>
+                {% for tramite in lista_tramites %}
+                <li>{{ tramite }} {% for t in tramites %} {% if t.nombre == tramite %}{% if t.turnos %}
+                  <small class="badge badge-success">Turnos </small>{% endif %} {% if t.espontaneos %}<small
+                    class="badge badge-info"> Espontaneos</small>{% endif %} {% endif %}{% endfor%}</li>
+                {% endfor %}
+              </ul>
+            </dd>
+            {% endfor %}
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+ <!-- INICIO CARD IMAGENES EXTRA-->
+<div class="card collapsed-card">
+  <div class="card-header btn" data-card-widget="collapse">
+    <h5 class="card-title">
+      <i class="fas fa-file-image"></i>&nbsp; Imagenes de la sede
+    </h5>
+
+    <div class="card-tools">
+      <ul class="list-unstyled mb-0 d-flex justify-content-center">
+        <li>
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-plus"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if imagenes %}
+    <div id="carouselExampleIndicators1" class="carousel slide carousel-fade" data-ride="carousel">
+      <ol class="carousel-indicators">
+        {% for i in imagenes %}
+
+        <li data-target="#carouselExampleIndicators1" data-slide-to="{{forloop.counter0}}" class="
+                      {% if forloop.first %}
+                      active
+                      {% endif %}
+                      "></li>
+
+        {% endfor %}
+      </ol>
+      <div class="carousel-inner">
+        {% for i in imagenes %}
+        <div class="carousel-item 
+                  {% if forloop.first %}
+                  active
+                  {% endif %}
+                  ">
+          <img src="{{i.archivo.url}}" class="d-block " alt="..."
+            style="width: auto; width: 100%; height: 500px; max-height: 500px;">
+        </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-target="#carouselExampleIndicators1"
+        data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previo</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-target="#carouselExampleIndicators1"
+        data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Siguiente</span>
+      </button>
+    </div>
+    {% else %}
+    <div class="text-center">Sin imágenenes </div>
+    {% endif %}
+
+  </div>
+</div>
+<!-- FIN IMAGENES EXTRA-->
+
+<!-- INICIO CARD PLANOS EXTRA-->
+<div class="card collapsed-card">
+  <div class="card-header btn" data-card-widget="collapse">
+    <h5 class="card-title">
+      <i class="fas fa-file-image"></i>&nbsp; Planos de la sede
+    </h5>
+
+    <div class="card-tools">
+      <ul class="list-unstyled mb-0 d-flex justify-content-center">
+        <li>
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-plus"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if planos %}
+    <div id="carouselExampleIndicators2" class="carousel slide carousel-fade" data-ride="carousel">
+      <ol class="carousel-indicators">
+        {% for p in planos %}
+
+        <li data-target="#carouselExampleIndicators2" data-slide-to="{{forloop.counter0}}" class="
+                      {% if forloop.first %}
+                      active
+                      {% endif %}
+                      "></li>
+
+        {% endfor %}
+      </ol>
+      <div class="carousel-inner">
+        {% for p in planos %}
+        <div class="carousel-item 
+                  {% if forloop.first %}
+                  active
+                  {% endif %}
+                  ">
+          <img src="{{p.planos.url}}" class="d-block " alt="..."
+            style="width: auto; width: 100%; height: 500px; max-height: 500px;">
+        </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-target="#carouselExampleIndicators2"
+        data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previo</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-target="#carouselExampleIndicators2"
+        data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Siguiente</span>
+      </button>
+    </div>
+    {% else %}
+    <div class="text-center">Sin planos </div>
+    {% endif %}
+
+  </div>
+</div>
+<!-- FIN PLANOS EXTRA-->
+
+
+    {% if object.mapa %}
+    <!-- INICIO TARJETA MAPA-->
+    <div class="card collapsed-card">
+      <div class="card-header btn" data-card-widget="collapse">
+        <h5 class="card-title">
+          <i class="fas fa-map-marker-alt"></i>&nbsp; Mapa
+        </h5>
+
+        <div class="card-tools">
+          <ul class="list-unstyled mb-0 d-flex justify-content-center">
+            <li>
+              <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                <i class="fas fa-expand"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-column">
+          <div class="row">
+            <div class="col align-items-center text-center">
+              <div class="row">
+                <div class="col">
+                  <div class="embed-responsive embed-responsive-16by9">
+                    <iframe src="{{object.mapa}}" style="border:0;" allowfullscreen="" loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN TARJETA MAPA-->
+    {% endif %}
+  </div>
+  <!-- FIN COLUMNA PRINCIPAL -->
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalBorrar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-gradient-danger">
+        <h5 class="modal-title" id="exampleModalLabel">Esta seguro que quiere borrar?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <form action="#" method="POST">
+          {% csrf_token %}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          &nbsp;&nbsp;&nbsp;
+          <button type="submit" name="borrar_sede" class="btn btn-danger">Borrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('miGrafico').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Licencias - Renovacion', 'Licencias - Otorgamiento', 'Registro Civil - Solicitud de partidas', 'Licencias - Reimpresion', 'Registro Civil - Identificaciones', 'Transporte - Sube', 'AGIP - Patentes', 'Licencias - Ampliacion', 'Licencias - Certificado de Legalidad', 'AGIP - Inmobiliario ABL'],
+                datasets: [{
+                    label: 'Top 10 de Trámites por Organismo',
+                    data: [2097, 641, 527, 505, 305, 290, 276, 269, 250, 246],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+              
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+  {% endblock content%}
+
+  {% block customJS %}
+
+  {% endblock customJS%}

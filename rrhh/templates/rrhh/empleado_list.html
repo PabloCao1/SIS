@@ -1,0 +1,308 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+{% block title %}
+- Empleados
+{% endblock %}
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+<link
+  href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.css"
+  rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.css" />
+{% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item active">Listado</li>
+{% endblock %}
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Listado de empleados
+{%endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+
+<div class="row d-flex justify-content-between my-3 mx-sm-2">
+  <div class="col-12 col-sm-3">
+    <a class="btn btn-primary mb-2 mb-sm-0 d-block d-sm-inline" href="{% url 'empleado_add'%}">Agregar</a>
+  </div>
+  <div class="col-12 col-sm-3">
+    <form action="" method="GET">
+      <div class="input-group">
+        <input type="search" class="form-control form-control-md" placeholder="Apellido o DNI"
+          value="{{ request.GET.busqueda }}" name="busqueda" />
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-md btn-default">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card collapsed-card">
+      <div class="card-header btn text-reset" data-card-widget="collapse">
+        <h5 class="card-title">
+          <i class="fas fa-search"></i>&nbsp; Búsqueda avanzada
+        </h5>
+
+        <div class="card-tools">
+          <ul class="list-unstyled mb-0 d-flex justify-content-center">
+            <li>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-12">
+          <div class="w-100">
+            <form method="POST">
+              {% csrf_token %}
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" data-placeholder="Sede" id="id_sede" name="sede"
+                        style="width: 100%;">
+                        <option value="" disabled selected>Sede</option>
+                        {% for id, nombre in opciones_sedes %}
+                        <option value="{{ id }}">{{ nombre }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" name="polivalente" name="capacitacion_polivalente"
+                        style="width: 100%;">
+                        <option value="" disabled selected>Polivalente</option>
+                        {% for p in polivalente %}
+                        <option>{{p.capacitacion_polivalente}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" style="width: 100%;" name="comuna">
+                        <option value="" disabled selected>Comuna en que vive</option>
+                        {% for c in comuna %}
+                        <option>{{c.comuna |default_if_none:' - '}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" style="width: 100%;" name="evaluacion">
+                        <option value="" disabled selected>Eval. Desempeño</option>
+                        {% for e in evaluacion %}
+                        <option>{{e.eval_desemp_2021}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <input type="text" class="form-control column_filter" id="id_CUIT" name="CUIT" placeholder="CUIT"
+                      value="">
+                  </div>
+                  <div class="col-md-3">
+                    <input type="text" class="form-control column_filter" id="id_apellidos" name="apellidos"
+                      placeholder="Apellido">
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" id="id_sexo" name="sexo" data-placeholder="Género"
+                        style="width: 100%;">
+                        <option value="" disabled selected>Sexo</option>
+                        {% for s in sexo %}
+                        <option>{{s.sexo |default_if_none:' - '}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" data-placeholder="Tipo de contratación" style="width: 100%;"
+                        name="contratacion">
+                        <option value="" disabled selected>Tipo de contratación</option>
+                        {% for c in contratacion %}
+                        <option>{{c.tipo_contratacion |default_if_none:' - '}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <input type="text" class="form-control column_filter" id="id_Num_Expediente" name="Num_Expediente"
+                      placeholder="Num. Expediente">
+                  </div>
+                  <div class="col-md-6 mt-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="text-nowrap  pr-3" style="color: #969494;">Rango de edad </div>
+                      <input id="edad" name="edad" type="text" class="span2" value="" data-slider-min="18"
+                        data-slider-max="99" data-slider-step="1" data-slider-value="[18,99]" />
+                      <div id="ex6SliderVal" class="px-4 text-muted text-nowrap">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" data-placeholder="Activo" style="width: 100%;" name="activo">
+                        <option value="" disabled selected>Activo</option>
+                        {% for a in activo %}
+                        <option>{{a.activo |default_if_none:' - '}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col d-flex justify-content-end">
+                    <button class="btn btn-primary" name="busqueda" type="submit">Buscar</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card ">
+      <div class="card-header">
+        <h5 class="card-title">
+          <i class="fas fa-users"></i>&nbsp; Empleados
+        </h5>
+        <div class="card-tools">
+          <!-- Buttons, labels, and many other things can be placed here! -->
+          <!-- Here is a label for example -->
+          <button type="button" class="btn btn-tool" data-card-widget="maximize" title="expandir">
+            <i class="fas fa-expand"></i>
+          </button>
+        </div>
+        <!-- /.card-tools -->
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <table id="DataTableJS" class="table compact hover order-column row-border my-3" style="width: 100%">
+          <thead class="thead-dark">
+            <tr class="">
+              <th>Nombre</th>
+              <th class="text-left">Edad</th>
+              <th class="text-left">CUIT</th>
+              <th class="text-left">Contratación</th>
+              <th>Sede</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in object_list %}
+            <tr>
+              <td>{{e.apellidos |default_if_none:' - ' }} {{e.nombres |default_if_none:' - ' }}</td>
+              <td class="text-left">{{e.edad | default_if_none:"-" }}</td>
+              <td class="text-left">{{e.CUIT}}</td>
+              <td class="text-left">{{e.tipo_contratacion | default_if_none:"-" }}</td>
+              <td>{{e.sede | default_if_none:"-" }}</td>
+              <td>
+                <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                  <li><a href="#" class="text-reset" id="{{e.id | title}}"><i class="fas fa-info-circle mr-1"></i></a>
+                  </li>
+                  <li><a href="{% url 'empleado_detail' e.id %}" class="text-reset"><i
+                        class="fas fa-address-card"></i></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+</div>
+{% endblock content%}
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script
+  src="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
+
+<script src="{% static 'custom/js/dataTable.js' %}"></script>
+<script>
+  $(document).ready(function () {
+    let dataTable = initDataTable('#DataTableJS');
+  });
+</script>
+{% for e in object_list %}
+<script>
+
+  $(document).on("click", "#{{e.id | title }}", function (e) {
+    Swal.fire({
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 'auto',
+      html: '<div class="row">' +
+        '  <div class="col align-items-center text-center perfil-align">' +
+        '    {% if e.foto  %}' +
+        '    <img src="{{e.foto.url}}" alt="avatar" alt="avatar" class="" height="100" id="foto" />' +
+        '    {% else %}' +
+        '    <img src="{% static "custom/images/default-user.png" %}" alt="avatar" alt="avatar" class="" height="100" id="foto" />' +
+        '    {% endif %}' +
+        '  </div>' +
+        '</div>' +
+
+        '<div class="row">' +
+        '  <div class="col align-items-center text-center">' +
+        '    <hr class="hr2" />' +
+        '    <p class="lead">' +
+        '      <b>{{e.nombres}} {{e.apellidos}}</b>' +
+        '  </div>' +
+        '</div>' +
+        '<div class="row">' +
+        '    <div class="col-sm-auto">' +
+        '      <h6 class="mb-0 text-left">CUIT</h6>' +
+        '    </div>' +
+        '    <div class="col-sm-auto text-secondary text-left">' +
+        '      <h5 class="mb-0 text-left">{{e.CUIT |default_if_none:""}}</h5>' +
+        '    </div>' +
+        '  </div>' +
+        '<div class="row">' +
+        '    <div class="col-sm-auto">' +
+        '      <h6 class="mb-0 text-left">Email oficial</h6>' +
+        '    </div>' +
+        '    <div class="col-sm-auto text-secondary text-left">' +
+        '      <h5 class="mb-0 text-left">{{e.mail_oficial |default_if_none:""}}</h5>' +
+        '    </div>' +
+        '  </div>' +
+        '<div class="row">' +
+        '    <div class="col-sm-auto">' +
+        '      <h6 class="mb-0 text-left">Teléfono</h6>' +
+        '    </div>' +
+        '    <div class="col-sm-auto text-secondary text-left">' +
+        '      <h5 class="mb-0 text-left">{{e.telefono |default_if_none:""}}</h5>' +
+        '    </div>' +
+        '  </div>'
+    });
+  });
+</script>
+{% endfor %}
+{% endblock customJS %}

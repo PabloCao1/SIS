@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %};
+{% load static %};
+
+{% block custom_head %}
+{% endblock custom_head %}
+
+{% block title %}Sedes{% endblock %}
+{% block page_title %}Sedes{% endblock %};
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'listar_sede' %}">Sedes</a></li>
+<li class="breadcrumb-item active">Listado</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="row d-flex justify-content-between my-3 mx-sm-2">
+  <div class="col-12 col-sm-3">
+    <a class="btn btn-primary mb-2 mb-sm-0 d-block d-sm-inline" href="{% url 'crear_sede'%}">Agregar</a>
+  </div>
+  <div class="col-12 col-sm-3">
+    <form action="" method="GET">
+      <div class="input-group">
+        <input type="search" class="form-control form-control-md" placeholder="Buscar"
+          value="{{ request.GET.busqueda }}" name="busqueda" />
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-md btn-default">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      {% for o in object_list %}
+
+      
+        <div class="col-md-3">
+          <a href="{% url 'ver_sede' o.id %}" class="text-reset">
+          <div class="card card-widget widget-user">
+            {% if o.portada %}
+            <div class="widget-user-header text-white"
+              style="background: url('{{ o.portada.url }}') center center; background-size: cover;">
+              {% else %}
+              <div class="widget-user-header text-white"
+                style="background: url('{% static 'custom/images/portada.png' %}') center center; background-size: cover;">
+                {% endif %}
+              </div>
+              <div class="card-footer py-2">
+                <h4 class="text-left">{{ o.nombre }}</h4>
+              </div>
+            </div>
+          </a>
+          </div>
+      
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block customJS %}
+<script>
+  $(document).ready(function () {
+    $(".select2").select2();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %};
+{% load static %};
+
+{% block custom_head %}
+<link
+  href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.css"
+  rel="stylesheet">
+
+{% endblock custom_head %}
+
+{% block title %}Servicios{% endblock %};
+
+{% block page_title %}Servicios{% endblock %};
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">Configuraciones</li>
+  <li class="breadcrumb-item active">Servicios</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="row d-flex justify-content-between my-3 mx-sm-2">
+  <div class="col-12 col-sm-3 ">
+    <a class="btn btn-primary mb-2 mb-sm-0 d-block d-sm-inline" href="{% url 'crear_servicios'%}">Agregar</a>
+  </div>
+  <div class="col-12 col-sm-3 ">
+    <form action="" method="GET">
+      <div class="input-group">
+        <input type="search" class="form-control form-control-md" placeholder="Buscar"
+          value='{{ request.GET.busqueda }}' name='busqueda'>
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-md btn-default ">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="row ">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body ">
+        <table  class="table table-bordered table-striped projects " id="listado" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th >Descripción</th>
+              <th >Estado</th>
+              <th style="width: 15%" class="notexport">
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in object_list %}
+            <tr  >
+              <td><a href="{% url 'ver_servicios' o.id %}" class ="font-weight-bold" >{{o.nombre}}</a> </td>
+              <td > {{o.observaciones |default_if_none:"-"|truncatechars:100 }}</td>
+              <td>
+                {% if o.estado  %}
+                <span class="text-success font-weight-bold">Activo</span>
+                {% else %}
+                <span class="text-danger font-weight-bold">Inactivo</span>
+                {% endif %}
+              </td>
+              <td class="project-actions text-right">
+                <div class="btn-group" role="group"> 
+                  <a href="{% url 'ver_servicios' o.id %}" class="btn btn-primary btn-sm ver">Ver</a> 
+                  <a href="{% url 'editar_servicios' o.id %}" class="btn btn-primary btn-sm editar">Editar</a> 
+                  <a href="{% url 'eliminar_servicios' o.id %}" class="btn btn-danger btn-sm eliminar">Eliminar</a> 
+                  </div>
+              </td>
+             
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script
+  src="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    new DataTable('#listado', {
+      layout: {
+        top: 'search',
+        topStart: 'pageLength',
+        topEnd: 'buttons',
+        bottomStart: 'info',
+        bottomEnd: 'paging'
+      },
+      responsive: true,
+      language: { url: '//cdn.datatables.net/plug-ins/2.0.1/i18n/es-ES.json', },
+      buttons: [
+        'copy',
+        'pdf',
+        'print'
+      ],
+      pagingType: 'simple_numbers',
+    });
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+<!-- BLOQUE TITLE-->
+{% block title %}
+- Dashboard
+{% endblock %}
+<!-- ./BLOQUE TITLE-->
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+{% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Dashboard
+{% endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+{% block content %}
+
+<div class="row">
+  <div class="col-sm-3">
+    <div class="small-box bg-gradient-success">
+      <div class="inner">
+        <h2>{{cant_sedes}}</h2>
+        <p>Sedes</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-building"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        Más <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-sm-3">
+    <div class="small-box bg-gradient-warning">
+      <div class="inner">
+        <h2>{{ cant_empleados_activos }}</h2>
+        <p>Empleados</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-user"></i>
+      </div>
+      <a href="{% url 'empleado_list' %}" class="small-box-footer">
+        Más <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-sm-3">
+    <div class="small-box bg-maroon">
+      <div class="inner">
+        <h2>{{cant_eventos}}</h2>
+        <p>Eventos</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-chalkboard-teacher"></i>
+      </div>
+      <a href="{% url 'evento_list' %}" class="small-box-footer">
+        Más <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-sm-3">
+    <div class="small-box bg-purple">
+      <div class="inner">
+        <h2>28</h2>
+        <p>Otros</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        Más <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock content%}
+
+{% block customJS %}
+{% endblock customJS %}

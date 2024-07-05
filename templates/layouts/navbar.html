@@ -1,0 +1,46 @@
+{% load static %}
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand navbar-dark">
+  <!-- Left navbar links -->
+  <ul class="navbar-nav ">
+    <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+    </li>
+
+  </ul>
+
+  <!-- Right navbar links -->
+  <ul class="navbar-nav ml-auto">
+    <!-- MAXIMIZAR -->
+    <li class="nav-item">
+      <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+        <i class="fas fa-expand-arrows-alt"></i>
+      </a>
+    </li>
+    <!-- FIN MAXIMIZAR -->
+
+    <!-- DARKMODE / LIGHT MODE -->
+    <li>
+			<form action="" method="POST">
+				{% csrf_token %}
+				<a class="nav-link" href="#" role="button" id="darkmode">
+					{% if request.user.usuarios.darkmode %}
+					<i class="fas fa-moon " title="Cambiar a modo claro" id="darkmode_icon"></i>
+					{% else %}
+					<i class="far fa-moon " title="Cambiar a modo oscuro" id="darkmode_icon"></i>
+					{% endif %}
+				</a>
+				<input type="submit" hidden>
+			</form>
+		</li>
+    <!-- FIN DARKMODE / LIGHT MODE -->
+    <!-- LOGOUT -->
+    <li>
+      <a class="nav-link" href="" type="button" id="logout-link" title="Cerrar sesión" data-toggle="modal"
+        data-target="#modal-logout">
+        <i class="fas fa-power-off  text-lime" id="logout_icon"></i> </a>
+    </li>
+    <!-- FIN LOGOUT -->
+  </ul>
+</nav>
+<!-- /.navbar -->

@@ -1,0 +1,247 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+{% block title %}
+- Detalle Ticket
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %} {% endblock custom_head %}
+<!--FIN BLOQUE CUSTOM HEAD-->
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Detalle Ticket
+{% endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+<div class="row justify-content-center">
+
+  <!-- COLUMNA PERFIL -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex flex-column">
+          <div class="row">
+            <div class="col align-items-center text-center">
+              <div class="card">
+                <div class="card-body bg-secondary p-1 ">
+                  <div class="col align-items-center text-center mt-2">
+                    <h5 class="text-center"><b>Ticket</b></h5>
+                    <h4 class="text-center"><b>{{object.ticket |default_if_none:' - '}}</b></h4>
+                  </div>
+                </div>
+                {% if object.estado == "Pendiente" %}
+                <div class="card-footer bg-warning">
+                  {% elif object.estado == "En proceso" %}
+                  <div class="card-footer bg-info">
+                    {% elif object.estado == "Finalizado" %}
+                    <div class="card-footer bg-success">
+                      {% elif object.estado == "Rechazado" %}
+                      <div class="card-footer bg-danger">
+                        {% else %}
+                        <div class="card-footer">
+                          {% endif %}
+                          <h5 class="text-center"><b>{{object.estado |default_if_none:' - '}}</b></h5>
+                        </div>
+                      </div>
+                      <div class="row mt-0">
+                        <div class="card-body">
+                          <dl class="row mb-0 pl-2 text-left">
+                            <dd class="col-sm-6 mb-0">Fecha de solicitud:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.created|date:"d/m/Y"}}</dt>
+                            <dd class="col-sm-6 mb-0">Fecha cambio de estado:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.modified|date:"d/m/Y"|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">Solicitado por:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.nombre|default_if_none:'-'}}
+                              {{object.apellido|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">CUIT:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.CUIT|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">Email:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.mail|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">Sede:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.fk_sede|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">Subsede:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.subsede|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">Area:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.area|default_if_none:'-'}}</dt>
+                            <dd class="col-sm-6 mb-0">Organismo:</dt>
+                            <dt class="col-sm-6 mb-2">{{object.organismo|default_if_none:'-'}}</dt>
+
+                          </dl>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMNA CARDS -->
+          <div class="col-lg-6">
+
+            <!-- Tarjeta Personal -->
+            <div class="row">
+              <div class="col">
+                <div class="card">
+                  <div class="card-header btn text-reset" data-card-widget="collapse">
+                    <h5 class="card-title">
+                      <i class="fas fa-info-circle"></i>&nbsp; Datos
+                    </h5>
+                    <div class="card-tools">
+                      <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                        <li>
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <dl class="row">
+                      <dd class="col-sm-6">Nombre de la agenda</dt>
+                      <dt class="col-sm-6 mb-2">{{object.nombre_agenda|default_if_none:'-'}}</dd>
+                      <dd class="col-sm-6">Fecha de publicacion</dt>
+                      <dt class="col-sm-6 mb-2">{{object.fecha_publicacion|default_if_none:'-'|date:"d/m/Y"}}</dd>
+                      <dd class="col-sm-6">Fecha del primer turno</dt>
+                      <dt class="col-sm-6 mb-2">{{object.fecha_primer_turno|default_if_none:'-'|date:"d/m/Y"}}</dd>
+                      <dd class="col-sm-6">Maxima cantidad de turnos por ciudadano</dt>
+                      <dt class="col-sm-6 mb-2">{{object.max_turnos|default_if_none:'-'}} turnos.</dd>
+                      <dd class="col-sm-6">Visibilidad de agenda</dt>
+                      <dt class="col-sm-6 mb-2">{{object.visibilidad_agenda|default_if_none:'-'}} dias.</dd>
+                      <dd class="col-sm-6">Leyenda que figura antes de confirmar el turno</dt>
+                      <dt class="col-sm-6 mb-2">{{object.popup|default_if_none:'-'}}</dd>
+                      <dd class="col-sm-6">Texto en el mail de confirmación</dt>
+                      <dt class="col-sm-6 mb-2">{{object.txt_mail_confirmacion|default_if_none:'-'}}</dd>
+                      <dd class="col-sm-6">Requiere Login con MiBA?</dt>
+                      <dt class="col-sm-6 mb-2">{{object.login_BA|default_if_none:'-'}}</dd>
+                      <dd class="col-sm-6">Documentos permitidos</dt>
+                        <dt class="col-sm-6 mb-2">
+                          <ul class="mb-1 ml-2 pl-0">
+                            {% for o in object.documentos_permitidos.all %}
+                            <li>{{o.nombre}}</li>
+                            {% endfor %}
+                          </ul>
+                        </dt>
+                      <dd class="col-sm-6">El vecino puede reagendar cita?</dt>
+                      <dt class="col-sm-6 mb-2">{{object.vecino_reagendar_cita|default_if_none:'-'}}</dd>
+                      <dd class="col-sm-6">URL tramite</dt>
+                      <dt class="col-sm-6 mb-2">{{object.url_tramite|default_if_none:'-'}}</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- FIN Tarjeta Personal -->
+            <!-- Tarjeta Turnos -->
+            <div class="row">
+              <div class="col">
+                <div class="card">
+                  <div class="card-header btn text-reset" data-card-widget="collapse">
+                    <h5 class="card-title">
+                      <i class="fas fa-info-circle"></i>&nbsp; Turnos
+                    </h5>
+                    <div class="card-tools">
+                      <ul class="list-unstyled mb-0 d-flex justify-content-center">
+                        <li>
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <dl class="row">
+                      {% for turno in turnos %}
+                      <dd class="col-sm-3 text-right">{{ turno.hora }} : </dt>
+                      <dt class="col-sm-9 mb-2 text-left"> {{ turno.cantidad }} turnos</dd>
+                      {% endfor %}
+                    </dl>                     
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- FIN Tarjeta Turnos -->
+          </div>
+
+          <!-- COLUMNA ACCIONES-->
+          <div class="col-lg-2">
+
+            <div class="card pb-3">
+              <div class="card-header">
+                <h5 class="card-title">
+                  <i class="fas fa-check-circle mr-2"></i> Acciones
+                </h5>
+              </div>
+              {% comment %}<div class="row mb-1 mt-3">
+                <a href="{% url 'tktGOPA_change' object.id %}" class="px-4 text-reset"><i class="fas fa-edit"></i> Modificar ticket
+                </a>
+              </div>{% endcomment %}
+              <hr>
+              <div class="row mb-1">
+                <a href="#" data-toggle="modal" data-target="#modalCambiarEstado" class="px-4 text-reset"><i class="fas fa-history"></i> Cambiar estado
+                </a>
+              </div>
+            </div>
+
+            <div class="card">
+              <a href="{% url 'tktGOPA_delete' object.id %}" class="text-white">
+                <div class="card-header bg-gradient-danger">
+                  <h5 class="card-title">
+                    <i class="fas fa-minus-circle"></i>
+                    Eliminar ticket
+                  </h5>
+                </div>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- ************************************* MODALES ***************************************************** -->
+
+        <!--- MODAL MODIFICAR ESTADO -->
+        <div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="modalCambiarEstado"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-primary">
+                <h5 class="modal-title" id="exampleModalLabel">Modificar estado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="#" method="POST" id="modificar_estado" name="modificar_estado">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select class="form-control" id="estado" name="estado">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En proceso">En proceso</option>
+                        <option value="Finalizado">Finalizado</option>
+                        <option value="Rechazado">Rechazado</option>
+                    </select>
+                </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary boton-agregar-traspaso mr-1">Confirmar</button>
+                  <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {% endblock content%}
+
+        {% block customJS %}
+
+        {% endblock customJS %}

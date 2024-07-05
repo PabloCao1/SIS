@@ -1,0 +1,70 @@
+{% extends "layouts/base.html" %};
+{% load static %};
+
+{% block custom_head %}
+{% endblock custom_head %}
+
+{% block title %}Trámites{% endblock %};
+
+{% block page_title %}Trámites{% endblock %};
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">Configuraciones</li>
+  <li class="breadcrumb-item active">Trámites</li>
+{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="row">
+    <!-- botones -->
+    <div class="col-12 my-3 mx-2 d-print-none">
+
+        <a href="{% url 'editar_tramites' object.id %}" class="btn btn-primary mr-1">Editar</a>
+
+
+        <a href="{% url 'eliminar_tramites' object.id %}" class="btn btn-danger mr-1">Eliminar</a>
+
+    </div>
+    <!-- ./botones -->
+    
+    <div class="col-12">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="card-title">Detalle de Trámites</h3>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 font-weight-normal">Nombre</dt>
+                    <dd class="col-sm-9 font-weight-bold">{{ object.nombre |default_if_none:"-" }} </dd>
+                    <dt class="col-sm-3 font-weight-normal">Espontaneos</dt>
+                    <dd class="col-sm-9 font-weight-bold">{% if object.espontaneos %}Si{% else %}No{% endif %}</dd>
+                    <dt class="col-sm-3 font-weight-normal">Turnos</dt>
+                    <dd class="col-sm-9 font-weight-bold">{% if object.turnos %}Si{% else %}No{% endif %}</dd>
+                    <dt class="col-sm-3 font-weight-normal">Observaciones</dt>
+                    <dd class="col-sm-9 font-weight-bold">{{ object.observaciones|default_if_none:"-" }} </dd>
+                    <dt class="col-sm-3 font-weight-normal">Estado</dt>
+                    <dd class="col-sm-9 font-weight-bold text-success">{% if object.estado %}
+                    <span class="text-success font-weight-bold">Activo</span>
+                    {% else %}
+                    <span class="text-danger font-weight-bold">Inactivo</span>
+                    {% endif %}
+                   </dd>
+
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4 d-print-none">
+    <div class="col-12 mx-2">
+        <a href="{% url 'listar_tramites' %}" class="btn btn-secondary">Volver</a>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
+{% block customJS %}
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "layouts/base.html" %};
+{% load static %};
+
+{% block custom_head %}
+{% endblock custom_head %}
+
+{% block title %}Tramites{% endblock %};
+
+{% block page_title %}Tramites{% endblock %};
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">Configuraciones</li>
+  <li class="breadcrumb-item active">Tramites</li>
+{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <!-- Form NUEVO -->
+
+  <div class="row">
+    <div class="col">
+      <form class="needs-validation" novalidate method="POST" >
+        <!-- Security token -->
+        {% csrf_token %}
+        <div class="card card-primary card-outline">
+          <div class="card-header">
+            <h3 class="card-title"> {%if request.resolver_match.url_name == "editar_tramites" %} Editar
+              {% else %}
+              Agregar
+              {% endif %}
+              Tramite
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+
+              <div class="col-12">
+                <div class="form-group">
+                  {{form.nombre| as_crispy_field}}
+                </div>
+              </div>
+
+              <div class="col-12 mb-3">
+                <div class="form-group">
+                  {{form.fk_servicio| as_crispy_field}}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  {{form.turnos| as_crispy_field}}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  {{form.espontaneos| as_crispy_field}}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  {{form.estado| as_crispy_field}}
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-group">
+                  {{form.observaciones| as_crispy_field}}
+                </div>
+              </div>
+              
+              <div class="col-12
+            {%if request.resolver_match.url_name != 'subsecretarias_editar' %}
+            d-none
+            {%endif%}">
+							<div class="form-group">
+                {{form.estado| as_crispy_field}}
+							</div>
+						</div>
+              
+            </div>
+          </div>
+        </div>
+  
+        <div class="mt-4 mx-2">
+          <button type="submit" class="btn btn-primary mr-1">Confirmar</button>
+          <a href="{% url 'listar_tramites' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+ 
+
+{% endblock content%}
+
+{% block customJS %}
+<script>
+  // Disable form submissions if there are invalid fields
+  (function () {
+    'use strict';
+    window.addEventListener('load', function () {
+      // Get the forms we want to add validation styles to
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function (form) {
+        form.addEventListener('submit', function (event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+</script>
+{% endblock customJS%}

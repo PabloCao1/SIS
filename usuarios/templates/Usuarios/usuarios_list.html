@@ -1,0 +1,108 @@
+{% extends "layouts/base.html" %} {% load static %}
+
+{% block title %}
+- Usuarios
+{% endblock %}
+
+<!-- BLOQUE CUSTOM HEAD-->
+{% block custom_head %}
+<link
+  href="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.css"
+  rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.css" />
+{% endblock custom_head %}
+
+
+<!-- BLOQUE TITULO-->
+{% block page_title %}
+Usuarios
+{%endblock page_title%}
+<!-- FIN BLOQUE TITULO-->
+
+<!-- BLOQUE CONTENIDO-->
+{% block content %}
+
+<div class="row d-flex justify-content-between my-3 mx-sm-2">
+  <div class="col-12 col-sm-3 ">
+    <a class="btn btn-primary mb-2 mb-sm-0 d-block d-sm-inline" href="{% url 'usuarios_crear'%}">Agregar</a>
+  </div>
+  <div class="col-12 col-sm-3 ">
+    <form action="" method="GET">
+      <div class="input-group">
+        <input type="search" class="form-control form-control-md" placeholder="Buscar"
+          value='{{ request.GET.busqueda }}' name='busqueda'>
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-md btn-default ">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row ">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body ">
+        <table id="DataTableJS" class="table compact hover order-column row-border my-3" style="width: 100%">
+          <thead class="thead-dark">
+            <tr>
+              <th>Usuario</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th class="text-left">Último Ingreso</th>
+              <th>Grupos</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in object_list %}
+            <tr data-href="{% url 'usuarios_ver' o.id %}" style="cursor: pointer;" title="Ver detalles">
+              <td> {{o.usuario}} </td>
+              <td><span class="text-black h6"></a>{{o.usuario.first_name}} {{o.usuario.last_name}}</span></td>
+              <td><span>{{o.usuario.email}}</span></td>
+              <td class="text-left"> {{o.usuario.last_login |date }}</td>
+
+              <td>
+                {%for p in o.usuario.groups.all %}
+                <span class="badge badge-secondary " title="{{p.name}}">{{p}}</span>
+                {%empty%}
+                <span class="badge badge-secondary ">Sin grupos</span>
+                {%endfor%}
+              </td>
+              <td>
+                {% if o.usuario.is_active %}
+                <span class="text-success font-weight-bold">Activo</span>
+                {% else %}
+                <span class="text-danger font-weight-bold">Inactivo</span>
+                {% endif %}
+              </td>
+
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script
+  src="https://cdn.datatables.net/v/dt/dt-2.0.2/b-3.0.1/b-html5-3.0.1/b-print-3.0.1/fh-4.0.1/r-3.0.0/datatables.min.js"></script>
+<script src="{% static 'custom/js/dataTable.js' %}"></script>
+
+
+<script>
+  $(document).ready(function () {
+
+    let dataTable = initDataTable('#DataTableJS');
+
+  });
+</script>
+{% endblock %}
